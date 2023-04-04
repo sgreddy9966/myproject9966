@@ -1,0 +1,47 @@
+
+#installing packages (nginx,httpd)
+
+---
+-
+  hosts: slave1
+  name: play1
+  become: true
+  tasks:
+    -
+      apt: "name=nginx state=latest"
+      name: "Install nginx"
+-
+  hosts: slave2
+  name: play2
+  sudo: true
+  tasks:
+    - name: "Install a httpd package "
+      yum: "name=httpd state=latest"
+    - name: "Start a httpd service"
+      service: "name=httpd state=restarted"
+
+--------------------------------------------------------
+---
+-
+  hosts: slave1
+  name: play1
+  become: true
+  tasks:
+    -
+      name: "stop nginx service"
+      service: "name=nginx state=stopped"
+    - name: "UnInstall nginx package "
+      apt: "name=nginxd state=absent"
+- 
+  hosts: slave2
+  tasks: 
+    - 
+      name: "Stop httpd Services"
+      service: 
+        name: httpd
+        state: stopped
+    - 
+      yum: 
+        name: httpd
+        state: absent
+      name: "Uninstall httpd"
